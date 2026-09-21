@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SefArte — Galería de Arte</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ══════════════ NAVBAR ══════════════ -->
+  <header class="navbar" id="navbar">
+    <div class="navbar__brand">
+      <span class="navbar__logo">✦</span>
+      <a href="#hero" class="navbar__title">SefArte</a>
+    </div>
+    <nav class="navbar__links">
+      <a href="#galeria">Galería</a>
+      <a href="#sobre-mi">Sobre mí</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+    <button class="navbar__hamburger" id="hamburger" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <!-- ══════════════ HERO ══════════════ -->
+  <section class="hero" id="hero">
+    <div class="hero__texture"></div>
+    <div class="hero__content">
+      <p class="hero__pretitle">Bienvenido a</p>
+      <h1 class="hero__title">SefArte</h1>
+      <p class="hero__subtitle">Pintura · Fotografía · Expresión</p>
+      <a href="#galeria" class="btn btn--primary">Ver Galería</a>
+    </div>
+    <div class="hero__scroll-hint">
+      <span>↓</span>
+    </div>
+  </section>
+
+  <!-- ══════════════ GALERÍA ══════════════ -->
+  <section class="section galeria" id="galeria">
+    <div class="section__header">
+      <span class="section__tag">Obra</span>
+      <h2 class="section__title">Galería</h2>
+      <p class="section__desc">Una selección de cuadros y fotografías que cuentan historias desde el silencio del lienzo.</p>
+    </div>
+
+    <!-- Filtros -->
+    <div class="galeria__filtros" id="filtros">
+      <button class="filtro active" data-filter="all">Todo</button>
+      <button class="filtro" data-filter="cuadro">Cuadros</button>
+      <button class="filtro" data-filter="foto">Fotografía</button>
+    </div>
+
+    <!-- Grid -->
+    <div class="galeria__grid" id="galeria-grid">
+
+      <div class="obra" data-tipo="cuadro">
+        <div class="obra__img-wrap">
+          <img src="images/gallery/cuadro1.jpg" alt="Cuadro 1" loading="lazy" onerror="this.parentElement.classList.add('obra__img-wrap--placeholder')" />
+          <div class="obra__overlay">
+            <button class="obra__ver" data-index="0">Ver obra</button>
+          </div>
+        </div>
+        <div class="obra__info">
+          <h3 class="obra__titulo">Sin título I</h3>
+          <p class="obra__tipo">Óleo sobre lienzo</p>
+        </div>
+      </div>
+
+      <div class="obra" data-tipo="foto">
+        <div class="obra__img-wrap">
+          <img src="images/gallery/foto1.jpg" alt="Foto 1" loading="lazy" onerror="this.parentElement.classList.add('obra__img-wrap--placeholder')" />
+          <div class="obra__overlay">
+            <button class="obra__ver" data-index="1">Ver obra</button>
+          </div>
+        </div>
+        <div class="obra__info">
+          <h3 class="obra__titulo">Luz de tarde</h3>
+          <p class="obra__tipo">Fotografía analógica</p>
+        </div>
+      </div>
+
+      <div class="obra" data-tipo="cuadro">
+        <div class="obra__img-wrap">
+          <img src="images/gallery/cuadro2.jpg" alt="Cuadro 2" loading="lazy" onerror="this.parentElement.classList.add('obra__img-wrap--placeholder')" />
+          <div class="obra__overlay">
+            <button class="obra__ver" data-index="2">Ver obra</button>
+          </div>
+        </div>
+        <div class="obra__info">
+          <h3 class="obra__titulo">Forma y sombra</h3>
+          <p class="obra__tipo">Acrílico sobre madera</p>
+        </div>
+      </div>
+
+      <div class="obra" data-tipo="foto">
+        <div class="obra__img-wrap">
+          <img src="images/gallery/foto2.jpg" alt="Foto 2" loading="lazy" onerror="this.parentElement.classList.add('obra__img-wrap--placeholder')" />
+          <div class="obra__overlay">
+            <button class="obra__ver" data-index="3">Ver obra</button>
+          </div>
+        </div>
+        <div class="obra__info">
+          <h3 class="obra__titulo">Reflejo urbano</h3>
+          <p class="obra__tipo">Fotografía digital</p>
+        </div>
+      </div>
+
+      <div class="obra" data-tipo="cuadro">
+        <div class="obra__img-wrap">
+          <img src="images/gallery/cuadro3.jpg" alt="Cuadro 3" loading="lazy" onerror="this.parentElement.classList.add('obra__img-wrap--placeholder')" />
+          <div class="obra__overlay">
+            <button class="obra__ver" data-index="4">Ver obra</button>
+          </div>
+        </div>
+        <div class="obra__info">
+          <h3 class="obra__titulo">Paisaje interior</h3>
+          <p class="obra__tipo">Técnica mixta</p>
+        </div>
+      </div>
+
+      <div class="obra" data-tipo="foto">
+        <div class="obra__img-wrap">
+          <img src="images/gallery/foto3.jpg" alt="Foto 3" loading="lazy" onerror="this.parentElement.classList.add('obra__img-wrap--placeholder')" />
+          <div class="obra__overlay">
+            <button class="obra__ver" data-index="5">Ver obra</button>
+          </div>
+        </div>
+        <div class="obra__info">
+          <h3 class="obra__titulo">Instante</h3>
+          <p class="obra__tipo">Fotografía blanco y negro</p>
+        </div>
+      </div>
+
+    </div><!-- /grid -->
+  </section>
+
+  <!-- ══════════════ LIGHTBOX ══════════════ -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-hidden="true">
+    <button class="lightbox__close" id="lb-close" aria-label="Cerrar">✕</button>
+    <button class="lightbox__nav lightbox__nav--prev" id="lb-prev" aria-label="Anterior">‹</button>
+    <div class="lightbox__content">
+      <img src="" alt="" id="lb-img" />
+      <p class="lightbox__caption" id="lb-caption"></p>
+    </div>
+    <button class="lightbox__nav lightbox__nav--next" id="lb-next" aria-label="Siguiente">›</button>
+  </div>
+  <div class="lightbox__backdrop" id="lb-backdrop"></div>
+
+  <!-- ══════════════ SOBRE MÍ ══════════════ -->
+  <section class="section sobre-mi" id="sobre-mi">
+    <div class="sobre-mi__inner">
+      <div class="sobre-mi__imagen">
+        <div class="sobre-mi__frame">
+          <img src="images/hero/artista.jpg" alt="El artista" onerror="this.parentElement.classList.add('sobre-mi__frame--placeholder')" />
+        </div>
+      </div>
+      <div class="sobre-mi__texto">
+        <span class="section__tag">El artista</span>
+        <h2 class="section__title">Sobre mí</h2>
+        <p>
+          Soy un apasionado del arte visual que encuentra en la pintura y la fotografía su lenguaje más auténtico.
+          Cada obra es un diálogo entre la luz, el color y la emoción — una conversación que espero compartir contigo.
+        </p>
+        <p>
+          Mi trabajo transita entre el realismo poético y la abstracción expresiva, siempre buscando ese instante
+          donde la técnica se disuelve y queda solo la verdad de la imagen.
+        </p>
+        <a href="#contacto" class="btn btn--secondary">Escribirme</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ CONTACTO ══════════════ -->
+  <section class="section contacto" id="contacto">
+    <div class="section__header">
+      <span class="section__tag">Hablemos</span>
+      <h2 class="section__title">Contacto</h2>
+      <p class="section__desc">¿Interesado en una obra, una colaboración o simplemente quieres saludar? Escríbeme.</p>
+    </div>
+    <form class="contacto__form" id="contacto-form">
+      <div class="form__row">
+        <label class="form__label" for="nombre">Nombre</label>
+        <input class="form__input" id="nombre" type="text" placeholder="Tu nombre" required />
+      </div>
+      <div class="form__row">
+        <label class="form__label" for="email">Email</label>
+        <input class="form__input" id="email" type="email" placeholder="tu@email.com" required />
+      </div>
+      <div class="form__row">
+        <label class="form__label" for="mensaje">Mensaje</label>
+        <textarea class="form__input form__textarea" id="mensaje" placeholder="Tu mensaje..." required></textarea>
+      </div>
+      <button class="btn btn--primary" type="submit">Enviar mensaje</button>
+      <p class="form__feedback" id="form-feedback"></p>
+    </form>
+  </section>
+
+  <!-- ══════════════ FOOTER ══════════════ -->
+  <footer class="footer">
+    <p class="footer__brand">✦ SefArte</p>
+    <p class="footer__copy">© 2025 · Todos los derechos reservados</p>
+  </footer>
+
+  <!-- Firebase SDK (compat v9) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <!-- SefArte -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/firebase-init.js"></script>
+</body>
+</html>
