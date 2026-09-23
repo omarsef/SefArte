@@ -824,3 +824,56 @@ body::before {
 .adm-err { font-size: 0.82rem; color: #b94040; min-height: 1em; }
 .adm-ok { font-size: 0.82rem; color: #3a7a3a; font-style: italic; }
 .adm-empty { color: var(--c-muted); font-style: italic; font-size: 0.9rem; text-align: center; padding: 1rem 0; }
+
+/* ─── Título de serie en lista del admin ─── */
+.adm-serie-titulo {
+  font-family: var(--f-serif);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-gold);
+  padding: 0.6rem 0 0.3rem;
+  border-bottom: 1px solid var(--c-border);
+  margin-bottom: 0.4rem;
+  margin-top: 0.75rem;
+}
+.adm-textarea--sm { min-height: 70px; }
+
+/* ═══════════════════════════════════════════════
+   ENCABEZADOS DE SERIE EN LA GALERÍA
+   ═══════════════════════════════════════════════ */
+.serie-header {
+  grid-column: 1 / -1;
+  padding: 1.5rem 0 0.75rem;
+  margin-top: 1rem;
+}
+.serie-header:first-child { margin-top: 0; }
+
+.serie-header__titulo {
+  font-family: var(--f-serif);
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  font-weight: 700;
+  color: var(--c-text);
+  letter-spacing: 0.01em;
+  margin-bottom: 0.3rem;
+}
+.serie-header__desc {
+  font-size: 0.88rem;
+  color: var(--c-muted);
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+.serie-header__linea {
+  height: 2px;
+  background: linear-gradient(to right, var(--c-gold), transparent);
+  margin-top: 0.4rem;
+}
+.serie-header.hidden { display: none; }
+
+.galeria__empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--c-muted);
+  padding: 2rem;
+  font-style: italic;
+}

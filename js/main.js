@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════
    SefArte — JavaScript principal
-   Carga obras desde Firestore en tiempo real
+   Carga series y obras desde Firestore
+   Agrupa obras por serie con filtros dinámicos
    ═══════════════════════════════════════════════ */
 
 'use strict';
@@ -27,19 +28,16 @@ const lbCaption = document.getElementById('lb-caption');
 const lbClose   = document.getElementById('lb-close');
 const lbPrev    = document.getElementById('lb-prev');
 const lbNext    = document.getElementById('lb-next');
-let currentIndex = 0;
-
-function getVisibleObras() {
-  return [...document.querySelectorAll('#galeria-grid .obra:not(.hidden)')];
-}
+let currentIndex   = 0;
+let currentVisible = [];
 
 function openLightbox(index) {
-  const visible = getVisibleObras();
-  if (!visible[index]) return;
+  currentVisible = [...document.querySelectorAll('#galeria-grid .obra:not(.hidden)')];
+  if (!currentVisible[index]) return;
   currentIndex = index;
-  const img    = visible[index].querySelector('img');
-  const titulo = visible[index].querySelector('.obra__titulo')?.textContent || '';
-  const tipo   = visible[index].querySelector('.obra__tipo')?.textContent   || '';
+  const img    = currentVisible[index].querySelector('img');
+  const titulo = currentVisible[index].querySelector('.obra__titulo')?.textContent || '';
+  const tipo   = currentVisible[index].querySelector('.obra__tipo')?.textContent   || '';
   lbImg.src = img?.src || '';
   lbImg.alt = titulo;
   lbCaption.textContent = tipo ? `${titulo} · ${tipo}` : titulo;
@@ -58,8 +56,8 @@ function closeLightbox() {
 }
 
 function navigateLightbox(dir) {
-  const visible = getVisibleObras();
-  currentIndex = (currentIndex + dir + visible.length) % visible.length;
+  currentVisible = [...document.querySelectorAll('#galeria-grid .obra:not(.hidden)')];
+  currentIndex = (currentIndex + dir + currentVisible.length) % currentVisible.length;
   openLightbox(currentIndex);
 }
 
@@ -74,17 +72,47 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowRight') navigateLightbox(1);
 });
 
-// ─── Filtros ───
-function bindFiltros() {
-  const filtros = document.querySelectorAll('.filtro');
-  const obras   = document.querySelectorAll('#galeria-grid .obra');
-  filtros.forEach(btn => {
+// ─── Filtros por serie ───
+function renderFiltros(series) {
+  const cont = document.getElementById('filtros');
+  cont.innerHTML = '';
+
+  // Botón "Todas"
+  const btnTodas = document.createElement('button');
+  btnTodas.className = 'filtro active';
+  btnTodas.dataset.filter = 'all';
+  btnTodas.textContent = 'Todas';
+  cont.appendChild(btnTodas);
+
+  // Un botón por serie
+  series.forEach(serie => {
+    const btn = document.createElement('button');
+    btn.className = 'filtro';
+    btn.dataset.filter = serie.id;
+    btn.textContent = serie.nombre;
+    cont.appendChild(btn);
+  });
+
+  // Eventos de filtro
+  cont.querySelectorAll('.filtro').forEach(btn => {
     btn.addEventListener('click', () => {
-      filtros.forEach(b => b.classList.remove('active'));
+      cont.querySelectorAll('.filtro').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const filter = btn.dataset.filter;
-      obras.forEach(obra => {
-        obra.classList.toggle('hidden', filter !== 'all' && obra.dataset.tipo !== filter);
+
+      // Mostrar/ocultar obras
+      document.querySelectorAll('#galeria-grid .obra').forEach(obra => {
+        const match = filter === 'all' || obra.dataset.serie === filter;
+        obra.classList.toggle('hidden', !match);
+      });
+
+      // Mostrar/ocultar encabezados de serie
+      document.querySelectorAll('#galeria-grid .serie-header').forEach(header => {
+        if (filter === 'all') {
+          header.classList.remove('hidden');
+        } else {
+          header.classList.toggle('hidden', header.dataset.serie !== filter);
+        }
       });
     });
   });
@@ -100,22 +128,23 @@ function animateObras() {
         observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.12 });
+  }, { threshold: 0.1 });
 
-  document.querySelectorAll('#galeria-grid .obra').forEach(el => {
+  document.querySelectorAll('#galeria-grid .obra, #galeria-grid .serie-header').forEach(el => {
     el.style.opacity = '0';
-    el.style.transform = 'translateY(28px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'opacity 0.55s ease, transform 0.55s ease';
     observer.observe(el);
   });
 }
 
-// ─── Render de una obra individual ───
-function createObraEl(obra, index) {
+// ─── Crear elemento de obra ───
+function createObraEl(obra, globalIndex) {
   const el = document.createElement('div');
   el.className    = 'obra';
-  el.dataset.tipo = obra.categoria || 'cuadro';
-  el.dataset.id   = obra.id || '';
+  el.dataset.tipo  = obra.categoria || 'cuadro';
+  el.dataset.serie = obra.serieId   || '';
+  el.dataset.id    = obra.id        || '';
   el.innerHTML = `
     <div class="obra__img-wrap">
       <img src="${obra.imagenUrl || ''}" alt="${obra.titulo || ''}" loading="lazy"
@@ -129,30 +158,75 @@ function createObraEl(obra, index) {
       <p class="obra__tipo">${obra.tecnica || ''}</p>
     </div>`;
 
-  // Lightbox
-  el.querySelector('.obra__ver').addEventListener('click', () => openLightbox(index));
+  el.querySelector('.obra__ver').addEventListener('click', () => openLightbox(globalIndex));
   el.querySelector('.obra__img-wrap').addEventListener('click', (e) => {
-    if (!e.target.closest('.obra__ver')) openLightbox(index);
+    if (!e.target.closest('.obra__ver')) openLightbox(globalIndex);
   });
   el.querySelector('.obra__img-wrap').style.cursor = 'pointer';
-
   return el;
 }
 
-// ─── Render completo del grid ───
-function renderGrid(obras) {
+// ─── Render principal: series + obras agrupadas ───
+function renderGrid(obras, series) {
   const grid = document.getElementById('galeria-grid');
   grid.innerHTML = '';
+
   if (obras.length === 0) {
-    grid.innerHTML = '<p style="text-align:center;color:var(--c-muted);grid-column:1/-1;padding:2rem">No hay obras todavía.</p>';
+    grid.innerHTML = '<p class="galeria__empty">No hay obras todavía.</p>';
     return;
   }
-  obras.forEach((obra, i) => grid.appendChild(createObraEl(obra, i)));
-  bindFiltros();
+
+  // Agrupar obras por serie
+  const sinSerie = obras.filter(o => !o.serieId);
+  const porSerie = {};
+  series.forEach(s => { porSerie[s.id] = []; });
+  obras.forEach(o => {
+    if (o.serieId && porSerie[o.serieId]) porSerie[o.serieId].push(o);
+  });
+
+  let globalIndex = 0;
+
+  // Renderizar cada serie con su encabezado
+  series.forEach(serie => {
+    const obrasDeEstaSerie = porSerie[serie.id] || [];
+    if (obrasDeEstaSerie.length === 0) return;
+
+    // Encabezado de serie
+    const header = document.createElement('div');
+    header.className = 'serie-header';
+    header.dataset.serie = serie.id;
+    header.innerHTML = `
+      <h3 class="serie-header__titulo">${serie.nombre}</h3>
+      ${serie.descripcion ? `<p class="serie-header__desc">${serie.descripcion}</p>` : ''}
+      <div class="serie-header__linea"></div>`;
+    grid.appendChild(header);
+
+    // Obras de esta serie
+    obrasDeEstaSerie.forEach(obra => {
+      grid.appendChild(createObraEl(obra, globalIndex));
+      globalIndex++;
+    });
+  });
+
+  // Obras sin serie asignada (al final)
+  if (sinSerie.length > 0) {
+    const header = document.createElement('div');
+    header.className = 'serie-header';
+    header.dataset.serie = '__sin_serie';
+    header.innerHTML = `
+      <h3 class="serie-header__titulo">Otras obras</h3>
+      <div class="serie-header__linea"></div>`;
+    grid.appendChild(header);
+    sinSerie.forEach(obra => {
+      grid.appendChild(createObraEl(obra, globalIndex));
+      globalIndex++;
+    });
+  }
+
   animateObras();
 }
 
-// ─── Sobre mí desde Firestore ───
+// ─── Sobre mí ───
 function applySobreData(data) {
   if (!data) return;
   const artImg = document.querySelector('.sobre-mi__frame img');
@@ -173,7 +247,7 @@ form.addEventListener('submit', (e) => {
   setTimeout(() => { feedback.textContent = ''; }, 5000);
 });
 
-// ─── Animación sobre-mi y contacto ───
+// ─── Animaciones sobre-mi / contacto ───
 const obs2 = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -190,5 +264,5 @@ document.querySelectorAll('.sobre-mi__inner, .contacto__form').forEach(el => {
   obs2.observe(el);
 });
 
-// ─── Arranque: esperar a que Firebase esté listo ───
-window._sefarte = { renderGrid, applySobreData, createObraEl, bindFiltros };
+// ─── Exportar para admin.js y firebase-init.js ───
+window._sefarte = { renderGrid, renderFiltros, applySobreData };
