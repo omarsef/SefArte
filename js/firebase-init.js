@@ -24,10 +24,12 @@ function arrancarGaleria() {
     // Renderizar filtros
     window._sefarte.renderFiltros(series);
 
-    // 2. Cargar obras ordenadas por serie y por orden interno
-    _db.collection('obras').orderBy('serieOrden', 'asc').onSnapshot(obrasSnap => {
+    // 2. Cargar TODAS las obras (sin orderBy para no requerir índice)
+    _db.collection('obras').onSnapshot(obrasSnap => {
       const obras = [];
       obrasSnap.forEach(doc => obras.push({ id: doc.id, ...doc.data() }));
+      // Ordenar en el cliente por serieOrden (si existe) o por título
+      obras.sort((a, b) => (a.serieOrden ?? 999) - (b.serieOrden ?? 999) || (a.titulo || '').localeCompare(b.titulo || ''));
       window._sefarte.renderGrid(obras, series);
     }, err => console.error('Error cargando obras:', err));
 

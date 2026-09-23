@@ -415,7 +415,7 @@ function poblarSelectSeries() {
    OBRAS — lista en el panel
 ══════════════════════════════════════════════ */
 function renderAdminObrasList() {
-  db.collection('obras').orderBy('serieOrden', 'asc').get().then(snap => {
+  db.collection('obras').get().then(snap => {
     obrasList.innerHTML = '';
     if (snap.empty) {
       obrasList.innerHTML = '<p class="adm-empty">No hay obras. Agregá la primera.</p>';
@@ -621,7 +621,7 @@ sobreSave.addEventListener('click', async () => {
     sobreOk.classList.remove('adm-hidden');
     setTimeout(() => sobreOk.classList.add('adm-hidden'), 2500);
     sobreImgB64 = null; sobreImgInput.value = '';
-  } catch (err) {js, 
+  } catch (err) {
     showErr(sobreErr, `Error: ${err.message}`);
   } finally {
     sobreSave.disabled = false; sobreSave.textContent = 'Guardar cambios';
