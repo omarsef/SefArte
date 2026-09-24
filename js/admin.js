@@ -561,12 +561,8 @@ obraModalSave.addEventListener('click', async () => {
       imagenUrl = await uploadToCloudinary(pendingImgB64);
     }
 
-    // Orden dentro de la serie
-    let serieOrden = 0;
-    const snap = await db.collection('obras')
-      .where('serieId', '==', serieId)
-      .orderBy('serieOrden', 'desc').limit(1).get();
-    if (!snap.empty) serieOrden = (snap.docs[0].data().serieOrden || 0) + 1;
+    // Orden dentro de la serie (sin índice compuesto — ordenamos en cliente)
+    let serieOrden = Date.now();
 
     const obraData = { titulo, tecnica, serieId, categoria, serieOrden };
     if (imagenUrl) obraData.imagenUrl = imagenUrl;
