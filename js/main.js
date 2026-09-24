@@ -266,3 +266,37 @@ document.querySelectorAll('.sobre-mi__inner, .contacto__form').forEach(el => {
 
 // ─── Exportar para admin.js y firebase-init.js ───
 window._sefarte = { renderGrid, renderFiltros, applySobreData };
+
+// ─── Protección de imágenes ───
+(function protegerImagenes() {
+  // Bloquear clic derecho solo sobre imágenes
+  document.addEventListener('contextmenu', (e) => {
+    if (e.target.tagName === 'IMG' || e.target.closest('.obra__img-wrap')) {
+      e.preventDefault();
+      return false;
+    }
+  });
+
+  // Bloquear arrastrar imágenes
+  document.addEventListener('dragstart', (e) => {
+    if (e.target.tagName === 'IMG') {
+      e.preventDefault();
+      return false;
+    }
+  });
+
+  // Aplicar protección CSS a las imágenes existentes y futuras
+  function aplicarCSS(img) {
+    img.style.webkitUserDrag = 'none';
+    img.style.userSelect = 'none';
+    img.setAttribute('draggable', 'false');
+    img.setAttribute('oncontextmenu', 'return false');
+  }
+
+  // Observar imágenes que se agreguen dinámicamente
+  const imgObserver = new MutationObserver(() => {
+    document.querySelectorAll('#galeria-grid img, .sobre-mi__frame img').forEach(aplicarCSS);
+  });
+  imgObserver.observe(document.body, { childList: true, subtree: true });
+  document.querySelectorAll('img').forEach(aplicarCSS);
+})();

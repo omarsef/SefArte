@@ -870,6 +870,18 @@ body::before {
 }
 .serie-header.hidden { display: none; }
 
+/* ─── Protección de imágenes ─── */
+#galeria-grid img,
+.sobre-mi__frame img {
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
+}
+/* El wrap recibe los clics (lightbox), la imagen no */
+.obra__img-wrap {
+  pointer-events: all;
+}
+
 .galeria__empty {
   grid-column: 1 / -1;
   text-align: center;
