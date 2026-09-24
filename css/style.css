@@ -182,6 +182,7 @@ body::before {
   margin-bottom: 1rem;
   letter-spacing: 0.35em;
   text-transform: uppercase;
+  text-indent: 0.35em; /* compensa el letter-spacing para centrar visualmente */
 }
 
 .hero__subtitle {
